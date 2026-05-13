@@ -22,5 +22,9 @@ export const environment = {
     },
     whatsapp:                '+56932842677',
     monthlyPriceCLP:         8990
+  },
+  backend: {
+    baseUrl: '',
+    apiKey:  ''
   }
 };

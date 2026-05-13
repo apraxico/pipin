@@ -24,5 +24,12 @@ export const environment = {
     },
     whatsapp:                '+56932842677',     // tu número de soporte para premium
     monthlyPriceCLP:         8990
+  },
+  // ─── Backend unificado (pipin-backend) ───
+  // Sirve para storage de imágenes y endpoints admin.
+  // Si dejas baseUrl vacío, el front cae a Firebase Storage / WhatsApp.
+  backend: {
+    baseUrl: '',                              // ej. 'https://api.tudominio.com'
+    apiKey:  ''                               // misma API_KEY del .env del backend
   }
 };

@@ -1,0 +1,164 @@
+@use '@angular/material' as mat;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@include mat.core();
+
+/* ---------------------------------------------------------
+   Mini-reset propio (reemplaza el preflight de Tailwind que
+   apagamos para no romper el notch de mat-form-field).
+   Sólo lo esencial para que Tailwind utilities funcionen.
+--------------------------------------------------------- */
+*, ::before, ::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; line-height: 1.5; }
+body { margin: 0; line-height: inherit; }
+h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd { margin: 0; }
+ol, ul, menu { list-style: none; margin: 0; padding: 0; }
+img, svg, video, canvas, audio, iframe, embed, object { display: block; max-width: 100%; }
+button, [type='button'], [type='reset'], [type='submit'] {
+  background: transparent;
+  background-image: none;
+  cursor: pointer;
+}
+a { color: inherit; text-decoration: inherit; }
+
+// Paleta rosa polvo (primary)
+$rose-palette: (
+  50:  #fbf3f1,
+  100: #f5e3df,
+  200: #ecc7c0,
+  300: #dfa49a,
+  400: #d08679,
+  500: #c06b5d,
+  600: #a85648,
+  700: #874539,
+  800: #6b372e,
+  900: #562d26,
+  contrast: (
+    50: #3f3631, 100: #3f3631, 200: #3f3631,
+    300: #3f3631, 400: white, 500: white,
+    600: white, 700: white, 800: white, 900: white,
+  )
+);
+
+// Paleta sage (accent)
+$sage-palette: (
+  50:  #f3f5f1,
+  100: #e3e9dd,
+  200: #c8d3bf,
+  300: #a5b69a,
+  400: #8da38c,
+  500: #6f8770,
+  600: #566c58,
+  700: #445644,
+  800: #374438,
+  900: #2d372e,
+  contrast: (
+    50: #2d372e, 100: #2d372e, 200: #2d372e,
+    300: #2d372e, 400: white, 500: white,
+    600: white, 700: white, 800: white, 900: white,
+  )
+);
+
+$primary: mat.m2-define-palette($rose-palette, 500);
+$accent:  mat.m2-define-palette($sage-palette, 500);
+$warn:    mat.m2-define-palette(mat.$m2-red-palette);
+
+$typography: mat.m2-define-typography-config(
+  $font-family: 'Inter, system-ui, sans-serif',
+  $headline-1: mat.m2-define-typography-level(60px, 1.1, 400, 'Cormorant Garamond, serif'),
+  $headline-2: mat.m2-define-typography-level(48px, 1.15, 400, 'Cormorant Garamond, serif'),
+  $headline-3: mat.m2-define-typography-level(36px, 1.2, 400, 'Cormorant Garamond, serif'),
+  $headline-4: mat.m2-define-typography-level(28px, 1.25, 500, 'Cormorant Garamond, serif'),
+);
+
+$theme: mat.m2-define-light-theme((
+  color: (primary: $primary, accent: $accent, warn: $warn),
+  typography: $typography,
+  density: 0,
+));
+
+@include mat.all-component-themes($theme);
+
+:root {
+  --bg-cream: #faf6f0;
+  --bg-cream-deep: #f3ebde;
+  --ink-700: #3f3631;
+  --ink-400: #7a6a60;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background:
+    radial-gradient(at 0% 0%, #f5e3df40 0%, transparent 50%),
+    radial-gradient(at 100% 0%, #e3e9dd40 0%, transparent 50%),
+    var(--bg-cream);
+  color: var(--ink-700);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+/* El header sticky mide 64px (h-16). Compensa cuando el router scrollea a un #id. */
+section[id] { scroll-margin-top: 5rem; }
+
+/* Títulos elegantes en serif */
+.font-serif, h1.serif, h2.serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* Toolbar transparente para que se vea el fondo crema */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+}
+
+/* Pequeños retoques al snackbar */
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: var(--ink-700) !important;
+}
+
+/* ---------------------------------------------------------
+   Animaciones suaves
+--------------------------------------------------------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-fade-up        { opacity: 0; animation: fadeInUp .8s ease-out forwards; }
+.animate-fade-up.delay-1 { animation-delay: .15s; }
+.animate-fade-up.delay-2 { animation-delay: .30s; }
+.animate-fade-up.delay-3 { animation-delay: .45s; }
+.animate-fade-up.delay-4 { animation-delay: .60s; }
+.animate-fade-in        { opacity: 0; animation: fadeIn 1.2s ease-out forwards; }
+.animate-float          { animation: float 6s ease-in-out infinite; }
+.animate-float.slow     { animation-duration: 9s; }
+
+/* Banner hero con overlay cálido */
+.hero-bg {
+  background-image:
+    linear-gradient(180deg, rgba(250,246,240,.2) 0%, rgba(250,246,240,.6) 60%, rgba(250,246,240,1) 100%),
+    url('https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=1800&q=80');
+  background-size: cover;
+  background-position: center;
+}

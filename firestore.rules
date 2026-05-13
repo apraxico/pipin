@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Perfiles: cualquiera lee perfiles publicados; sólo el dueño escribe.
+    match /profiles/{userId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Servicios publicados: lectura pública, escritura sólo del dueño.
+    match /services/{serviceId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Favoritos de cada usuario. Solo el dueño lee y escribe.
+    match /userFavorites/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

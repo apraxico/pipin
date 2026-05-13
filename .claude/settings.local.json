@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(ng version *)",
+      "Bash(npm list *)",
+      "Bash(npx --yes @angular/cli@19 new pipin --directory=. --routing=true --style=scss --ssr=false --skip-git --package-manager=npm --defaults)",
+      "Bash(npm install *)",
+      "Bash(npx tailwindcss *)",
+      "Bash(npx ng *)",
+      "Bash(git --version)",
+      "Bash(git config *)",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)"
+    ]
+  }
+}

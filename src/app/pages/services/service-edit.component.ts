@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +27,7 @@ import { Profile } from '../../core/models/profile.model';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -103,34 +104,68 @@ import { Profile } from '../../core/models/profile.model';
         </mat-form-field>
 
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Fotos</label>
-          <div class="flex flex-wrap gap-3">
+          <label class="block text-sm font-medium text-ink-700 mb-2">Fotos</label>
+
+          <div class="flex flex-wrap gap-3 mb-3">
             @for (url of photos(); track url; let i = $index) {
               <div class="relative group">
-                <img [src]="url" class="w-24 h-24 object-cover rounded-lg ring-1 ring-gray-200">
+                <img [src]="url" referrerpolicy="no-referrer"
+                     class="w-24 h-24 object-cover rounded-lg ring-1 ring-cream-300">
                 <button mat-icon-button type="button"
-                        class="!absolute -top-2 -right-2 !bg-white shadow"
+                        class="!absolute -top-2 -right-2 !bg-cream-50 shadow"
                         (click)="removePhoto(i)">
                   <mat-icon class="!text-red-600">close</mat-icon>
                 </button>
               </div>
             }
-            <label class="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-brand-400 hover:text-brand-600 transition">
-              @if (uploading()) { <mat-spinner diameter="20"></mat-spinner> }
-              @else {
-                <mat-icon>add_photo_alternate</mat-icon>
-                <span class="text-xs mt-1">Subir</span>
-              }
+            @if (photos().length === 0) {
+              <div class="w-24 h-24 rounded-lg border-2 border-dashed border-cream-300 flex items-center justify-center text-ink-400 text-xs">
+                Sin fotos
+              </div>
+            }
+          </div>
+
+          <!-- Añadir por URL (no requiere Storage) -->
+          <div class="flex gap-2">
+            <mat-form-field appearance="outline" class="flex-1 !mb-0">
+              <mat-label>Pega una URL de imagen (https://...)</mat-label>
+              <input matInput [(ngModel)]="newPhotoUrl" [ngModelOptions]="{standalone:true}"
+                     placeholder="https://images.unsplash.com/..."
+                     (keyup.enter)="addPhotoUrl()">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+            <button mat-stroked-button type="button" (click)="addPhotoUrl()" class="!h-14">
+              <mat-icon>add</mat-icon> Añadir
+            </button>
+          </div>
+
+          <!-- Upload archivo (sólo si Storage activo) -->
+          <div class="flex items-center gap-3 mt-2">
+            <label class="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-cream-300 text-sm text-ink-600 hover:bg-cream-100 cursor-pointer transition">
+              @if (uploading()) { <mat-spinner diameter="16"></mat-spinner> }
+              @else { <mat-icon class="!text-base !w-4 !h-4">upload</mat-icon> }
+              Subir archivo
               <input type="file" accept="image/*" multiple hidden (change)="onPhotos($event)">
             </label>
+            <span class="text-[11px] text-ink-400 italic">
+              Si tu cuenta de Firebase no tiene Storage activo, usa la opción de URL.
+            </span>
           </div>
         </div>
 
-        <div class="md:col-span-2 flex items-center justify-between border-t pt-4">
-          <mat-slide-toggle formControlName="published" color="primary">Publicado</mat-slide-toggle>
-          <div class="flex gap-2">
-            <button mat-button type="button" (click)="router.navigateByUrl('/me/services')">Cancelar</button>
-            <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || saving()">
+        <div class="md:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-cream-300/60 pt-5">
+          <mat-slide-toggle formControlName="published" color="primary" class="self-start sm:self-auto">
+            Publicado
+          </mat-slide-toggle>
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button mat-stroked-button type="button"
+                    class="flex-1 sm:flex-none"
+                    (click)="router.navigateByUrl('/me/services')">
+              Cancelar
+            </button>
+            <button mat-flat-button color="primary" type="submit"
+                    class="flex-1 sm:flex-none"
+                    [disabled]="form.invalid || saving()">
               @if (saving()) { <mat-spinner diameter="20"></mat-spinner> }
               @else { Guardar }
             </button>
@@ -154,6 +189,7 @@ export class ServiceEditComponent implements OnInit {
   saving = signal(false);
   uploading = signal(false);
   photos = signal<string[]>([]);
+  newPhotoUrl = '';
   categories = CATEGORIES;
 
   form = this.fb.nonNullable.group({
@@ -189,7 +225,9 @@ export class ServiceEditComponent implements OnInit {
   }
 
   async onPhotos(e: Event) {
-    const files = Array.from((e.target as HTMLInputElement).files ?? []);
+    const input = e.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
     if (!files.length) return;
     const u = this.auth.user();
     if (!u) return;
@@ -197,11 +235,32 @@ export class ServiceEditComponent implements OnInit {
     try {
       const urls = await this.storage.uploadMany(`services/${u.uid}`, files);
       this.photos.update(prev => [...prev, ...urls]);
-    } catch {
-      this.snack.open('Error subiendo fotos', 'OK', { duration: 2500 });
+      this.snack.open(`${urls.length} foto(s) subida(s)`, 'OK', { duration: 2000 });
+    } catch (err: any) {
+      // Si Storage no está activo en Firebase, sugerimos usar URL.
+      const msg = err?.code === 'storage/unauthorized' || err?.message?.includes('CORS')
+        ? 'Storage no está activo en tu Firebase. Usa la opción de pegar URL.'
+        : 'Error subiendo fotos. Usa la opción de pegar URL.';
+      this.snack.open(msg, 'OK', { duration: 4000 });
+      console.error('Upload error', err);
     } finally {
       this.uploading.set(false);
     }
+  }
+
+  addPhotoUrl() {
+    const url = (this.newPhotoUrl || '').trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) {
+      this.snack.open('La URL debe empezar con http:// o https://', 'OK', { duration: 2500 });
+      return;
+    }
+    if (this.photos().includes(url)) {
+      this.snack.open('Esa URL ya está añadida', 'OK', { duration: 2000 });
+      return;
+    }
+    this.photos.update(prev => [...prev, url]);
+    this.newPhotoUrl = '';
   }
 
   removePhoto(i: number) {
@@ -234,8 +293,13 @@ export class ServiceEditComponent implements OnInit {
         this.snack.open('Servicio creado', 'OK', { duration: 2000 });
       }
       this.router.navigateByUrl('/me/services');
-    } catch (e) {
-      this.snack.open('No se pudo guardar', 'OK', { duration: 3000 });
+    } catch (e: any) {
+      const code = e?.code || e?.message || 'unknown';
+      console.error('Save service error:', e);
+      const msg = code.includes('permission')
+        ? 'Permiso denegado. Cierra sesión, vuelve a entrar y reintenta (token expirado).'
+        : `No se pudo guardar: ${code}`;
+      this.snack.open(msg, 'OK', { duration: 5000 });
     } finally {
       this.saving.set(false);
     }

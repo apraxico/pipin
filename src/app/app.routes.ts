@@ -45,6 +45,12 @@ export const routes: Routes = [
       import('./pages/favorites/favorites.component').then(m => m.FavoritesComponent)
   },
   {
+    path: 'checkout/premium',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/checkout/premium-checkout.component').then(m => m.PremiumCheckoutComponent)
+  },
+  {
     path: 'services/new',
     canActivate: [authGuard],
     loadComponent: () =>

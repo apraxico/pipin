@@ -142,7 +142,8 @@ interface CatBanner {
     </section>
 
     <!-- ═════════════════════════ LISTADO ═════════════════════════ -->
-    <section id="explorar" class="max-w-6xl mx-auto px-4 py-12">
+    <section class="max-w-6xl mx-auto px-4 py-12 relative">
+      <span id="explorar" class="anchor"></span>
       <div class="flex items-end justify-between mb-6 flex-wrap gap-3">
         <div>
           <p class="text-xs uppercase tracking-[0.2em] text-sage-600">Servicios disponibles</p>
@@ -260,7 +261,8 @@ interface CatBanner {
     </section>
 
     <!-- ═════════════════════════ CÓMO FUNCIONA ═════════════════════════ -->
-    <section id="como-funciona" class="bg-cream-100/60 border-y border-cream-300/60 py-16 mt-12">
+    <section class="bg-cream-100/60 border-y border-cream-300/60 py-16 mt-12 relative">
+      <span id="como-funciona" class="anchor"></span>
       <div class="max-w-5xl mx-auto px-4 text-center">
         <p class="text-xs uppercase tracking-[0.25em] text-sage-600">Así de simple</p>
         <h2 class="font-serif text-4xl text-ink-800 mt-2 mb-12">Cómo funciona</h2>
@@ -282,7 +284,8 @@ interface CatBanner {
     </section>
 
     <!-- ═════════════════════════ PLANES ═════════════════════════ -->
-    <section id="planes" class="max-w-6xl mx-auto px-4 py-20">
+    <section class="max-w-6xl mx-auto px-4 py-20 relative">
+      <span id="planes" class="anchor"></span>
       <div class="text-center mb-12 animate-fade-up">
         <p class="text-xs uppercase tracking-[0.25em] text-sage-600">Planes</p>
         <h2 class="font-serif text-4xl md:text-5xl text-ink-800 mt-2">
@@ -342,10 +345,10 @@ interface CatBanner {
             }
           </ul>
 
-          <button mat-flat-button class="!w-full !mt-8 !bg-cream-50 !text-rose-700"
-                  (click)="goPremium()">
+          <a mat-flat-button [routerLink]="premiumLink()"
+             class="!w-full !mt-8 !bg-cream-50 !text-rose-700">
             Quiero ser Premium
-          </button>
+          </a>
         </div>
       </div>
 
@@ -355,7 +358,8 @@ interface CatBanner {
     </section>
 
     <!-- ═════════════════════════ FAQ ═════════════════════════ -->
-    <section id="faq" class="bg-cream-100/60 border-y border-cream-300/60 py-20">
+    <section class="bg-cream-100/60 border-y border-cream-300/60 py-20 relative">
+      <span id="faq" class="anchor"></span>
       <div class="max-w-3xl mx-auto px-4">
         <div class="text-center mb-10 animate-fade-up">
           <p class="text-xs uppercase tracking-[0.25em] text-sage-600">Dudas frecuentes</p>
@@ -430,6 +434,7 @@ export class HomeComponent {
   publishLink    = computed(() => this.auth.user() ? '/services/new' : '/auth/register');
   publishLabel   = computed(() => this.auth.user() ? 'Publicar mi servicio' : 'Publicar mi servicio');
   ctaBannerLabel = computed(() => this.auth.user() ? 'Crear servicio' : 'Crear mi cuenta');
+  premiumLink    = computed(() => this.auth.user() ? '/checkout/premium' : '/auth/register');
 
   banners: CatBanner[] = [
     {
@@ -518,9 +523,6 @@ export class HomeComponent {
     this.selected.set(v);
   }
 
-  goPremium() {
-    this.snack.open('Pronto: pasarela de pago. Te avisaremos por email.', 'OK', { duration: 3500 });
-  }
 
   categoryLabel(v: string) {
     return CATEGORIES.find(c => c.value === v)?.label ?? v;

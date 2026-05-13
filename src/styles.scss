@@ -89,8 +89,12 @@ $theme: mat.m2-define-light-theme((
   --ink-400: #7a6a60;
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
 html, body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
   background:
@@ -100,10 +104,232 @@ html, body {
   color: var(--ink-700);
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
-/* El header sticky mide 64px (h-16). Compensa cuando el router scrollea a un #id. */
-section[id] { scroll-margin-top: 5rem; }
+/* Sticky header reforzado — funciona en cualquier viewport */
+app-header > header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Modo nocturno · paleta profesional "lobby de hotel a media luz"
+   Un único tono caoba unificado, acentos en rosa apagado y miel.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Paleta noche · vino + mulberry + rosa caliente. Sin marrones. */
+html.dark {
+  --night-bg:        #160810;   /* deep velvet wine */
+  --night-surface:   #28101d;   /* wine ligeramente más claro */
+  --night-elevated:  #1d0a16;   /* nivel intermedio */
+  --night-border:    rgba(255, 120, 145, 0.10);
+  --night-border-hi: rgba(255, 120, 145, 0.22);
+  --night-rose:      #ff7088;   /* rosa hot, sensual sin agredir */
+  --night-rose-soft: #e85676;
+  --night-rose-deep: #b51e44;   /* crimson */
+  --night-mulberry:  #8b1f4d;   /* mulberry profundo para gradientes */
+  --night-honey:     #e8b86f;   /* dorado miel — para detalles premium */
+  --night-honey-hi:  #f4cf94;
+  --night-text:      #f8dde2;   /* crema con tinte rosado */
+  --night-text-mid:  #ecc4cd;
+  --night-text-low:  #b88a99;
+  --night-text-mute: #8d6573;
+}
+
+html.dark, html.dark body {
+  background:
+    radial-gradient(ellipse 80% 50% at 25% -10%, rgba(255, 93, 124, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(232, 184, 111, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 50% 50%, rgba(139, 31, 77, 0.08) 0%, transparent 60%),
+    var(--night-bg);
+  color: var(--night-text);
+}
+
+/* ─── Surfaces unificadas (sólo 2 niveles) ─── */
+html.dark .bg-cream-50,
+html.dark .bg-white                    { background-color: var(--night-surface) !important; }
+html.dark .bg-cream-100,
+html.dark .bg-cream-100\/60,
+html.dark .bg-cream-100\/80,
+html.dark .bg-cream-200                { background-color: var(--night-elevated) !important; }
+html.dark .bg-cream-50\/95             { background-color: rgba(42, 31, 26, 0.92) !important; backdrop-filter: blur(8px); }
+html.dark .bg-cream-50\/50             { background-color: rgba(34, 24, 20, 0.5) !important; }
+
+/* Header sticky */
+html.dark header.bg-cream-100\/80      { background-color: rgba(28, 20, 17, 0.82) !important; }
+
+/* ─── Tipografía ─── */
+html.dark .text-ink-800                { color: var(--night-text); }
+html.dark .text-ink-700                { color: var(--night-text-mid); }
+html.dark .text-ink-600                { color: var(--night-text-low); }
+html.dark .text-ink-400                { color: var(--night-text-mute); }
+html.dark .text-rose-600,
+html.dark .text-rose-700               { color: var(--night-rose); }
+html.dark .text-sage-600,
+html.dark .text-sage-700               { color: var(--night-honey); }
+html.dark .text-clay-600               { color: var(--night-honey-hi); }
+html.dark .text-cream-50,
+html.dark .text-cream-100,
+html.dark .text-cream-200,
+html.dark .text-rose-50,
+html.dark .text-rose-100,
+html.dark .text-rose-50\/90,
+html.dark .text-cream-200\/90          { color: var(--night-text) !important; }
+
+/* ─── Tintes y badges con tinte rosa ─── */
+html.dark .bg-rose-100                 { background-color: rgba(232, 138, 156, 0.10) !important; }
+html.dark .bg-rose-100 .text-rose-700  { color: var(--night-rose); }
+html.dark .bg-green-100                { background-color: rgba(212, 165, 116, 0.12) !important; }
+html.dark .text-green-700              { color: var(--night-honey) !important; }
+html.dark .bg-gray-100                 { background-color: rgba(245, 227, 223, 0.06) !important; }
+html.dark .text-gray-600               { color: var(--night-text-low) !important; }
+
+/* ─── Bordes y rings ─── */
+html.dark .border-cream-300,
+html.dark .border-cream-300\/40,
+html.dark .border-cream-300\/60,
+html.dark .border-cream-200            { border-color: var(--night-border) !important; }
+html.dark .ring-cream-50,
+html.dark .ring-cream-300              { --tw-ring-color: var(--night-border) !important; }
+html.dark .ring-rose-100,
+html.dark .ring-rose-200               { --tw-ring-color: rgba(232, 138, 156, 0.25) !important; }
+html.dark .ring-clay-500               { --tw-ring-color: rgba(212, 165, 116, 0.45) !important; }
+
+/* ─── Blobs decorativos del hero (más sutiles) ─── */
+html.dark .bg-rose-300\/30,
+html.dark .bg-rose-200\/40             { background-color: rgba(232, 138, 156, 0.10) !important; }
+html.dark .bg-sage-300\/30,
+html.dark .bg-sage-200\/40             { background-color: rgba(212, 165, 116, 0.06) !important; }
+html.dark .bg-clay-200\/40,
+html.dark .bg-clay-300\/40             { background-color: rgba(224, 180, 134, 0.08) !important; }
+
+/* ─── Hero: muestra la imagen, overlay cálido ─── */
+html.dark .hero-bg {
+  background-image:
+    linear-gradient(180deg,
+      rgba(28, 20, 17, 0.30) 0%,
+      rgba(28, 20, 17, 0.65) 55%,
+      rgba(28, 20, 17, 0.96) 100%),
+    url('https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=1800&q=80');
+}
+
+/* ─── Gradientes CTA: vino → mulberry → crimson, sensual y profundo ─── */
+html.dark .from-rose-600               { --tw-gradient-from: #8b1f4d var(--tw-gradient-from-position) !important; }
+html.dark .from-rose-700               { --tw-gradient-from: #6b1838 var(--tw-gradient-from-position) !important; }
+html.dark .via-rose-500                { --tw-gradient-via: #b51e44 var(--tw-gradient-via-position) !important; }
+html.dark .via-rose-600                { --tw-gradient-via: #8b1f4d var(--tw-gradient-via-position) !important; }
+html.dark .to-clay-500                 { --tw-gradient-to: #e8b86f var(--tw-gradient-to-position) !important; }
+html.dark .to-pink-400                 { --tw-gradient-to: #ff5d7e var(--tw-gradient-to-position) !important; }
+html.dark .from-brand-600              { --tw-gradient-from: #8b1f4d var(--tw-gradient-from-position) !important; }
+
+/* ─── Botones Material · gradiente sensual con glow ─── */
+html.dark .mat-mdc-raised-button.mat-primary,
+html.dark .mat-mdc-unelevated-button.mat-primary {
+  background: linear-gradient(135deg, var(--night-rose), var(--night-rose-deep)) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 22px rgba(255, 93, 124, 0.32), 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+}
+html.dark .mat-mdc-raised-button.mat-primary:hover,
+html.dark .mat-mdc-unelevated-button.mat-primary:hover {
+  background: linear-gradient(135deg, #ff8198, var(--night-rose-deep)) !important;
+  box-shadow: 0 6px 28px rgba(255, 93, 124, 0.45), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+html.dark .mat-mdc-outlined-button {
+  color: var(--night-text-mid) !important;
+  border-color: var(--night-border-hi) !important;
+}
+html.dark .mat-mdc-outlined-button:hover {
+  background: rgba(245, 227, 223, 0.04) !important;
+}
+html.dark .mat-mdc-button { color: var(--night-text-mid) !important; }
+html.dark .mat-mdc-icon-button { color: var(--night-text-mid) !important; }
+
+/* CTA en bandas con fondo claro (botón crema sobre gradiente) */
+html.dark .bg-cream-50.text-rose-700 { background-color: var(--night-text) !important; color: #4a2530 !important; }
+
+/* ─── Inputs Material ─── */
+html.dark .mat-mdc-text-field-wrapper                  { background-color: var(--night-surface) !important; }
+html.dark .mdc-text-field--filled,
+html.dark .mdc-text-field--outlined                    { background-color: transparent !important; }
+html.dark .mdc-notched-outline__leading,
+html.dark .mdc-notched-outline__notch,
+html.dark .mdc-notched-outline__trailing               { border-color: var(--night-border-hi) !important; }
+html.dark .mdc-text-field--focused .mdc-notched-outline__leading,
+html.dark .mdc-text-field--focused .mdc-notched-outline__notch,
+html.dark .mdc-text-field--focused .mdc-notched-outline__trailing { border-color: var(--night-rose) !important; }
+html.dark .mat-mdc-form-field-focus-overlay            { background: rgba(232, 138, 156, 0.03) !important; }
+html.dark .mat-mdc-input-element,
+html.dark .mat-mdc-form-field-input-control,
+html.dark textarea.mat-mdc-input-element               { color: var(--night-text) !important; caret-color: var(--night-rose) !important; }
+html.dark .mat-mdc-form-field-label,
+html.dark .mdc-floating-label,
+html.dark .mat-mdc-form-field-hint,
+html.dark .mat-mdc-form-field-bottom-align             { color: var(--night-text-mute) !important; }
+html.dark .mdc-text-field--focused .mdc-floating-label { color: var(--night-rose) !important; }
+
+/* ─── Menú flotante / Snackbar ─── */
+html.dark .mat-mdc-menu-panel {
+  background: var(--night-surface) !important;
+  border: 1px solid var(--night-border) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
+}
+html.dark .mat-mdc-menu-item                           { color: var(--night-text) !important; }
+html.dark .mat-mdc-menu-item:hover                     { background: rgba(245, 227, 223, 0.04) !important; }
+html.dark .mat-mdc-menu-item .mat-icon                 { color: var(--night-text-low) !important; }
+html.dark .mat-divider                                 { border-top-color: var(--night-border) !important; }
+
+html.dark .mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: var(--night-surface) !important;
+  color: var(--night-text) !important;
+  border: 1px solid var(--night-border) !important;
+}
+
+/* ─── Select / Option ─── */
+html.dark .mat-mdc-select-value-text                   { color: var(--night-text) !important; }
+html.dark .mat-mdc-select-arrow                        { color: var(--night-text-low) !important; }
+html.dark .mat-mdc-option .mdc-list-item__primary-text { color: var(--night-text) !important; }
+
+/* ─── Sombras ─── */
+html.dark .shadow-soft  { box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 10px 30px -12px rgba(0,0,0,0.55) !important; }
+html.dark .shadow-warm  { box-shadow: 0 4px 24px rgba(232, 138, 156, 0.09), 0 1px 3px rgba(0,0,0,0.3) !important; }
+
+/* ─── Misceláneos ─── */
+html.dark .bg-clay-500                                 { background-color: #a37548 !important; }
+html.dark .bg-clay-100                                 { background-color: rgba(212, 165, 116, 0.12) !important; }
+html.dark details.bg-cream-50 summary mat-icon         { color: var(--night-rose) !important; }
+html.dark hr,
+html.dark .bg-gradient-to-r.from-transparent.via-rose-200.to-transparent {
+  background: linear-gradient(90deg, transparent, var(--night-border-hi), transparent) !important;
+}
+
+/* Gradient overlay sobre imágenes (sigue siendo oscuro hacia abajo) */
+html.dark .from-ink-800\/40            { --tw-gradient-from: rgba(28, 20, 17, 0.6) var(--tw-gradient-from-position) !important; }
+html.dark .from-ink-800\/85,
+html.dark .from-ink-900\/85            { --tw-gradient-from: rgba(15, 9, 7, 0.85) var(--tw-gradient-from-position) !important; }
+html.dark .via-ink-900\/30             { --tw-gradient-via: rgba(15, 9, 7, 0.3) var(--tw-gradient-via-position) !important; }
+
+/* Slide toggle */
+html.dark .mdc-switch__track           { background-color: rgba(245, 227, 223, 0.15) !important; }
+html.dark .mdc-switch--selected .mdc-switch__track { background-color: rgba(232, 138, 156, 0.4) !important; }
+
+/* El header sticky mide 64px (h-16). Compensa cuando el router scrollea a un #id.
+   Aplica a cualquier elemento con id que sea un anchor target. */
+[id] { scroll-margin-top: 5rem; }
+
+/* Marker invisible para anchors: aterriza el scroll justo en este punto,
+   sin importar el padding de la sección contenedora. */
+.anchor {
+  display: block;
+  height: 1px;
+  width: 100%;
+  position: relative;
+  top: -1rem;
+  pointer-events: none;
+  visibility: hidden;
+}
 
 /* Títulos elegantes en serif */
 .font-serif, h1.serif, h2.serif {

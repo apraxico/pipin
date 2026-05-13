@@ -191,5 +191,122 @@ export const SEED_SERVICES: SeedService[] = [
     published: true,
     ownerName: 'Isidora V.',
     ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Isidora%20V&backgroundColor=f5e3df'
+  },
+
+  // ────────────── Catálogo "candente" — masajes & compañía con onda íntima ──────────────
+  {
+    title: 'Masaje sensorial a piel descubierta · luz tenue',
+    description:
+      'Experiencia íntima de cuerpo completo. Aceites tibios, música suave, sala oscura iluminada sólo con velas. Pensado para soltar el cuerpo y entregar todos los sentidos. Mayores de 18.',
+    category: 'masajes',
+    price: 55000,
+    currency: 'CLP',
+    durationMinutes: 75,
+    city: 'Santiago',
+    photos: [
+      'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=900&q=80',
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=900&q=80'
+    ],
+    whatsapp: '+56988776655',
+    whatsappMessage: 'Hola, me interesa el masaje sensorial.',
+    published: true,
+    ownerName: 'Antonia D.',
+    ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Antonia%20D&backgroundColor=f5e3df'
+  },
+  {
+    title: 'Masaje tántrico · despertar de la energía',
+    description:
+      'Ritual de presencia consciente que trabaja respiración, contacto suave y prolongado. No es terapéutico ni sexual, es un viaje íntimo de conexión. Sólo personas mayores de 21 años.',
+    category: 'masajes',
+    price: 70000,
+    currency: 'CLP',
+    durationMinutes: 90,
+    city: 'Santiago',
+    photos: [
+      'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=900&q=80',
+      'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=900&q=80'
+    ],
+    whatsapp: '+56922118855',
+    whatsappMessage: 'Hola, quiero saber más del masaje tántrico.',
+    published: true,
+    ownerName: 'Lorenza F.',
+    ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Lorenza%20F&backgroundColor=ecc7c0'
+  },
+  {
+    title: 'Compañía íntima · cenas privadas y after',
+    description:
+      'Acompañamiento elegante y reservado para cenas, copas o veladas en hotel boutique. Conversación culta, química real, vestimenta a medida del evento. Discreción absoluta.',
+    category: 'compania',
+    price: 150000,
+    currency: 'CLP',
+    durationMinutes: 240,
+    city: 'Santiago',
+    photos: [
+      'https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?w=900&q=80',
+      'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&q=80',
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=900&q=80'
+    ],
+    whatsapp: '+56988224477',
+    whatsappMessage: 'Hola, quiero saber más sobre tu disponibilidad.',
+    published: true,
+    ownerName: 'Renata C.',
+    ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Renata%20C&backgroundColor=ecc7c0'
+  },
+  {
+    title: 'Encuentro VIP a domicilio · hotel o departamento',
+    description:
+      'Servicio premium con disponibilidad nocturna. Llego donde me indiques en zona oriente de Santiago. Encuentro íntimo, sin apuros, con todo lo necesario para una velada inolvidable.',
+    category: 'compania',
+    price: 200000,
+    currency: 'CLP',
+    durationMinutes: 180,
+    city: 'Santiago',
+    photos: [
+      'https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=900&q=80',
+      'https://images.unsplash.com/photo-1521791055366-0d553872125f?w=900&q=80'
+    ],
+    whatsapp: '+56977665544',
+    whatsappMessage: 'Hola, me interesa tu servicio VIP a domicilio.',
+    published: true,
+    ownerName: 'Macarena S.',
+    ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Macarena%20S&backgroundColor=f5e3df'
+  },
+  {
+    title: 'Masaje corporal en pareja · vela y champagne',
+    description:
+      'Sesión privada para dos. Pediluvio, masaje espalda y piernas con aceites, copa de espumante y ambiente íntimo. Ideal aniversario o noche especial.',
+    category: 'masajes',
+    price: 90000,
+    currency: 'CLP',
+    durationMinutes: 120,
+    city: 'Santiago',
+    photos: [
+      'https://images.unsplash.com/photo-1583416750470-965b2707b355?w=900&q=80',
+      'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=900&q=80'
+    ],
+    whatsapp: '+56955443322',
+    whatsappMessage: 'Hola, queremos reservar el masaje en pareja.',
+    published: true,
+    ownerName: 'Estudio Brasa',
+    ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Estudio%20Brasa&backgroundColor=ecc7c0'
+  },
+  {
+    title: 'Compañera de viaje · fines de semana',
+    description:
+      'Te acompaño a tu destino de fin de semana: playa, montaña, escapada urbana. Conversación, fotos, planes y química real. Cubres traslado y estadía. Disponibilidad reservar con anticipación.',
+    category: 'compania',
+    price: 350000,
+    currency: 'CLP',
+    durationMinutes: 2880,
+    city: 'Nacional',
+    photos: [
+      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&q=80',
+      'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&q=80'
+    ],
+    whatsapp: '+56933221100',
+    whatsappMessage: 'Hola, quiero planificar una escapada contigo.',
+    published: true,
+    ownerName: 'Florencia M.',
+    ownerAvatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Florencia%20M&backgroundColor=f5e3df'
   }
 ];

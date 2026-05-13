@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal, OnInit } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -48,31 +49,49 @@ import { Profile } from '../../core/models/profile.model';
 
         <mat-form-field appearance="outline" class="md:col-span-2">
           <mat-label>Título del servicio</mat-label>
-          <input matInput formControlName="title" maxlength="80">
+          <input matInput formControlName="title" maxlength="80" required>
+          <mat-hint>Mínimo 4 caracteres · {{ form.value.title?.length || 0 }} / 80</mat-hint>
+          @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+            <mat-error>El título es obligatorio</mat-error>
+          }
+          @if (form.controls.title.hasError('minlength') && form.controls.title.touched) {
+            <mat-error>Mínimo 4 caracteres</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Categoría</mat-label>
-          <mat-select formControlName="category">
+          <mat-select formControlName="category" required>
             @for (c of categories; track c.value) {
               <mat-option [value]="c.value">{{ c.label }}</mat-option>
             }
           </mat-select>
+          @if (form.controls.category.hasError('required') && form.controls.category.touched) {
+            <mat-error>Elige una categoría</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Ciudad</mat-label>
-          <input matInput formControlName="city">
+          <input matInput formControlName="city" placeholder="Ej. Santiago, Online">
+          <mat-hint>Opcional</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Precio</mat-label>
-          <input matInput type="number" formControlName="price" min="0">
+          <input matInput type="number" formControlName="price" min="0" required>
+          <mat-hint>Mínimo 0 · usa "0" si es a convenir</mat-hint>
+          @if (form.controls.price.hasError('required') && form.controls.price.touched) {
+            <mat-error>El precio es obligatorio</mat-error>
+          }
+          @if (form.controls.price.hasError('min') && form.controls.price.touched) {
+            <mat-error>Debe ser un número positivo</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Moneda</mat-label>
-          <mat-select formControlName="currency">
+          <mat-select formControlName="currency" required>
             <mat-option value="CLP">CLP</mat-option>
             <mat-option value="USD">USD</mat-option>
             <mat-option value="EUR">EUR</mat-option>
@@ -84,23 +103,39 @@ import { Profile } from '../../core/models/profile.model';
         <mat-form-field appearance="outline">
           <mat-label>Duración (min)</mat-label>
           <input matInput type="number" formControlName="durationMinutes" min="0">
+          <mat-hint>Opcional · típico 30-90</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>WhatsApp (con código país)</mat-label>
-          <input matInput formControlName="whatsapp" placeholder="+56 9 1234 5678">
+          <input matInput formControlName="whatsapp" placeholder="+56 9 1234 5678" required>
           <mat-icon matSuffix>chat</mat-icon>
+          <mat-hint>Necesario para el CTA · ej. +56912345678</mat-hint>
+          @if (form.controls.whatsapp.hasError('required') && form.controls.whatsapp.touched) {
+            <mat-error>El número de WhatsApp es obligatorio</mat-error>
+          }
+          @if (form.controls.whatsapp.hasError('pattern') && form.controls.whatsapp.touched) {
+            <mat-error>Formato inválido. Usa código país, ej. +56912345678</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="md:col-span-2">
           <mat-label>Descripción</mat-label>
-          <textarea matInput formControlName="description" rows="5" maxlength="1500"></textarea>
+          <textarea matInput formControlName="description" rows="5" maxlength="1500" required></textarea>
+          <mat-hint align="start">Mínimo 20 caracteres</mat-hint>
           <mat-hint align="end">{{ form.value.description?.length || 0 }} / 1500</mat-hint>
+          @if (form.controls.description.hasError('required') && form.controls.description.touched) {
+            <mat-error>La descripción es obligatoria</mat-error>
+          }
+          @if (form.controls.description.hasError('minlength') && form.controls.description.touched) {
+            <mat-error>Mínimo 20 caracteres — describe qué incluye, dónde, condiciones</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="md:col-span-2">
           <mat-label>Mensaje inicial de WhatsApp (opcional)</mat-label>
           <input matInput formControlName="whatsappMessage" placeholder="Hola, vi tu servicio en Pipin...">
+          <mat-hint>Texto pre-llenado al abrir WhatsApp. Si lo dejas vacío usamos uno genérico.</mat-hint>
         </mat-form-field>
 
         <div class="md:col-span-2">
@@ -153,6 +188,23 @@ import { Profile } from '../../core/models/profile.model';
           </div>
         </div>
 
+        <!-- Resumen de validación: visible cuando hay errores -->
+        @if (missingFields().length > 0) {
+          <div class="md:col-span-2 bg-rose-100/60 border border-rose-200 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+              <mat-icon class="text-rose-700 !mt-0.5">info</mat-icon>
+              <div class="flex-1">
+                <p class="font-medium text-rose-700">Te faltan algunos datos antes de guardar:</p>
+                <ul class="text-sm text-ink-600 mt-1.5 space-y-0.5 list-disc list-inside">
+                  @for (m of missingFields(); track m) {
+                    <li>{{ m }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+        }
+
         <div class="md:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-cream-300/60 pt-5">
           <mat-slide-toggle formControlName="published" color="primary" class="self-start sm:self-auto">
             Publicado
@@ -165,7 +217,7 @@ import { Profile } from '../../core/models/profile.model';
             </button>
             <button mat-flat-button color="primary" type="submit"
                     class="flex-1 sm:flex-none"
-                    [disabled]="form.invalid || saving()">
+                    [disabled]="saving()">
               @if (saving()) { <mat-spinner diameter="20"></mat-spinner> }
               @else { Guardar }
             </button>
@@ -269,9 +321,48 @@ export class ServiceEditComponent implements OnInit {
     this.photos.set(arr);
   }
 
+  /** Lista en español de los campos faltantes. Reactivo al estado del form. */
+  missingFields = computed(() => {
+    // Disparar recomputo en cambios del form: leemos statusChanges via signal abajo.
+    this.formStatus();
+    const errors: string[] = [];
+    const c = this.form.controls;
+    if (c.title.hasError('required'))          errors.push('Título del servicio');
+    else if (c.title.hasError('minlength'))    errors.push('Título: mínimo 4 caracteres');
+    if (c.description.hasError('required'))    errors.push('Descripción');
+    else if (c.description.hasError('minlength')) errors.push('Descripción: mínimo 20 caracteres');
+    if (c.category.hasError('required'))       errors.push('Categoría');
+    if (c.price.hasError('required'))          errors.push('Precio');
+    else if (c.price.hasError('min'))          errors.push('Precio: debe ser positivo');
+    if (c.currency.hasError('required'))       errors.push('Moneda');
+    if (c.whatsapp.hasError('required'))       errors.push('Número de WhatsApp');
+    return errors;
+  });
+
+  // signal-friendly wrapper sobre statusChanges para que computed reaccione
+  private formStatus = toSignal(this.form.statusChanges, { initialValue: this.form.status });
+
   async save() {
     const u = this.auth.user();
-    if (!u || this.form.invalid) return;
+    if (!u) return;
+
+    // Mostrar errores del formulario aunque el usuario no haya tocado los campos.
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) {
+      const missing = this.missingFields();
+      const summary = missing.length === 1
+        ? `Falta: ${missing[0]}`
+        : `Faltan ${missing.length} campos: ${missing.slice(0, 3).join(', ')}${missing.length > 3 ? '...' : ''}`;
+      this.snack.open(summary, 'OK', { duration: 4500 });
+      // Hacer scroll al primer error
+      queueMicrotask(() => {
+        const firstError = document.querySelector('mat-form-field.mat-form-field-invalid');
+        firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      return;
+    }
+
     this.saving.set(true);
     try {
       const v = this.form.getRawValue();

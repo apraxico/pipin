@@ -22,7 +22,7 @@ export const environment = {
       name:                  'Tu Nombre',
       email:                 'pagos@pipin.cl'
     },
-    whatsapp:                '+56912345678',     // tu número de soporte para premium
+    whatsapp:                '+56932842677',     // tu número de soporte para premium
     monthlyPriceCLP:         8990
   }
 };

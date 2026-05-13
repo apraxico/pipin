@@ -20,7 +20,7 @@ export const environment = {
       name:                  'Tu Nombre',
       email:                 'pagos@pipin.cl'
     },
-    whatsapp:                '+56912345678',
+    whatsapp:                '+56932842677',
     monthlyPriceCLP:         8990
   }
 };

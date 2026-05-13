@@ -32,7 +32,7 @@ export const SEED_SERVICES: SeedService[] = [
       'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=900&q=80',
       'https://images.unsplash.com/photo-1530021232320-687d8e3dba54?w=900&q=80'
     ],
-    whatsapp: '+56912345678',
+    whatsapp: '+56932842677',
     whatsappMessage: 'Hola, vi tu publicación de conversaciones en Pipin y me interesa.',
     published: true,
     ownerName: 'Camila R.',

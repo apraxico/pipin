@@ -131,6 +131,9 @@ import { ThemeService } from '../core/services/theme.service';
               }
             </a>
             <a mat-menu-item routerLink="/services/new"><mat-icon>add_circle</mat-icon> Nuevo servicio</a>
+            <a mat-menu-item routerLink="/admin/seed" class="!text-sage-700">
+              <mat-icon>science</mat-icon> Datos de muestra
+            </a>
 
             <mat-divider></mat-divider>
 

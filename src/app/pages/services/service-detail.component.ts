@@ -1,5 +1,6 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 
@@ -19,7 +20,7 @@ import { buildWhatsAppLink } from '../../core/utils/whatsapp.util';
   selector: 'app-service-detail',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatIconModule, MatChipsModule,
+    CommonModule, RouterLink, MatButtonModule, MatIconModule, MatChipsModule,
     MatTooltipModule, MatSnackBarModule
   ],
   template: `
@@ -94,22 +95,24 @@ import { buildWhatsAppLink } from '../../core/utils/whatsapp.util';
               Te llevará a una conversación directa con quien ofrece el servicio.
             </p>
 
-            <div class="flex items-center gap-3 mt-6 pt-5 border-t border-cream-300/60">
+            <a [routerLink]="['/u', s.ownerUid]"
+               class="flex items-center gap-3 mt-6 pt-5 border-t border-cream-300/60 group hover:bg-cream-100/40 -mx-2 px-2 py-2 rounded-lg transition">
               <img
                 [src]="s.ownerAvatar || 'https://api.dicebear.com/9.x/initials/svg?seed=' + (s.ownerName || 'P') + '&backgroundColor=ecc7c0'"
                 referrerpolicy="no-referrer"
                 (error)="onAvatarError($event, s.ownerName)"
                 class="w-12 h-12 rounded-full object-cover ring-2 ring-rose-200">
-              <div>
-                <p class="font-serif text-lg text-ink-800 leading-tight inline-flex items-center gap-1">
+              <div class="flex-1 min-w-0">
+                <p class="font-serif text-lg text-ink-800 leading-tight inline-flex items-center gap-1 group-hover:text-rose-700 transition">
                   {{ s.ownerName || 'Anónimo' }}
                   @if (s.ownerVerified) {
                     <mat-icon class="!text-base !w-5 !h-5 text-sage-600" matTooltip="Perfil verificado">verified</mat-icon>
                   }
                 </p>
-                <p class="text-[11px] text-ink-400 uppercase tracking-wider">Publicado en Pipin</p>
+                <p class="text-[11px] text-ink-400 uppercase tracking-wider">Ver perfil completo</p>
               </div>
-            </div>
+              <mat-icon class="!text-base !w-5 !h-5 text-ink-300 group-hover:text-rose-600 transition">chevron_right</mat-icon>
+            </a>
           </div>
         </aside>
       </article>

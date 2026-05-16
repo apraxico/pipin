@@ -9,6 +9,7 @@ export interface Profile {
   city?: string;
   age?: number;
   avatarUrl?: string;
+  photos?: string[];
   whatsapp?: string;
   email?: string;
   // Premium / verificación

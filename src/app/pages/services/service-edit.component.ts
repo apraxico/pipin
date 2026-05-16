@@ -139,7 +139,10 @@ import { Profile } from '../../core/models/profile.model';
         </mat-form-field>
 
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-ink-700 mb-2">Fotos</label>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium text-ink-700">Fotos del lugar</label>
+            <span class="text-xs text-ink-400">{{ photos().length }} / {{ MAX_PHOTOS }}</span>
+          </div>
 
           <div class="flex flex-wrap gap-3 mb-3">
             @for (url of photos(); track url; let i = $index) {
@@ -166,24 +169,30 @@ import { Profile } from '../../core/models/profile.model';
               <mat-label>Pega una URL de imagen (https://...)</mat-label>
               <input matInput [(ngModel)]="newPhotoUrl" [ngModelOptions]="{standalone:true}"
                      placeholder="https://images.unsplash.com/..."
+                     [disabled]="photos().length >= MAX_PHOTOS"
                      (keyup.enter)="addPhotoUrl()">
               <mat-icon matSuffix>link</mat-icon>
             </mat-form-field>
-            <button mat-stroked-button type="button" (click)="addPhotoUrl()" class="!h-14">
+            <button mat-stroked-button type="button" (click)="addPhotoUrl()" class="!h-14"
+                    [disabled]="photos().length >= MAX_PHOTOS">
               <mat-icon>add</mat-icon> Añadir
             </button>
           </div>
 
           <!-- Upload archivo (sólo si Storage activo) -->
           <div class="flex items-center gap-3 mt-2">
-            <label class="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-cream-300 text-sm text-ink-600 hover:bg-cream-100 cursor-pointer transition">
+            <label class="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-cream-300 text-sm text-ink-600 hover:bg-cream-100 cursor-pointer transition"
+                   [class.opacity-50]="photos().length >= MAX_PHOTOS"
+                   [class.pointer-events-none]="photos().length >= MAX_PHOTOS">
               @if (uploading()) { <mat-spinner diameter="16"></mat-spinner> }
               @else { <mat-icon class="!text-base !w-4 !h-4">upload</mat-icon> }
               Subir archivo
-              <input type="file" accept="image/*" multiple hidden (change)="onPhotos($event)">
+              <input type="file" accept="image/*" multiple hidden
+                     [disabled]="photos().length >= MAX_PHOTOS"
+                     (change)="onPhotos($event)">
             </label>
             <span class="text-[11px] text-ink-400 italic">
-              Si tu cuenta de Firebase no tiene Storage activo, usa la opción de URL.
+              Hasta {{ MAX_PHOTOS }} fotos. Si Storage no está activo, usa URL.
             </span>
           </div>
         </div>
@@ -238,6 +247,8 @@ export class ServiceEditComponent implements OnInit {
 
   id = input<string | undefined>();
 
+  readonly MAX_PHOTOS = 4;
+
   saving = signal(false);
   uploading = signal(false);
   photos = signal<string[]>([]);
@@ -272,7 +283,7 @@ export class ServiceEditComponent implements OnInit {
     this.services.get(id).subscribe(s => {
       if (!s) return;
       this.form.patchValue(s as any);
-      this.photos.set(s.photos ?? []);
+      this.photos.set((s.photos ?? []).slice(0, this.MAX_PHOTOS));
     });
   }
 
@@ -283,11 +294,21 @@ export class ServiceEditComponent implements OnInit {
     if (!files.length) return;
     const u = this.auth.user();
     if (!u) return;
+    const remaining = this.MAX_PHOTOS - this.photos().length;
+    if (remaining <= 0) {
+      this.snack.open(`Máximo ${this.MAX_PHOTOS} fotos`, 'OK', { duration: 2500 });
+      return;
+    }
+    const toUpload = files.slice(0, remaining);
     this.uploading.set(true);
     try {
-      const urls = await this.storage.uploadMany(`services/${u.uid}`, files);
-      this.photos.update(prev => [...prev, ...urls]);
-      this.snack.open(`${urls.length} foto(s) subida(s)`, 'OK', { duration: 2000 });
+      const urls = await this.storage.uploadMany(`services/${u.uid}`, toUpload);
+      this.photos.update(prev => [...prev, ...urls].slice(0, this.MAX_PHOTOS));
+      if (files.length > toUpload.length) {
+        this.snack.open(`Se subieron ${toUpload.length}. Máximo ${this.MAX_PHOTOS}.`, 'OK', { duration: 3000 });
+      } else {
+        this.snack.open(`${urls.length} foto(s) subida(s)`, 'OK', { duration: 2000 });
+      }
     } catch (err: any) {
       // Si Storage no está activo en Firebase, sugerimos usar URL.
       const msg = err?.code === 'storage/unauthorized' || err?.message?.includes('CORS')
@@ -303,6 +324,10 @@ export class ServiceEditComponent implements OnInit {
   addPhotoUrl() {
     const url = (this.newPhotoUrl || '').trim();
     if (!url) return;
+    if (this.photos().length >= this.MAX_PHOTOS) {
+      this.snack.open(`Máximo ${this.MAX_PHOTOS} fotos`, 'OK', { duration: 2500 });
+      return;
+    }
     if (!/^https?:\/\//i.test(url)) {
       this.snack.open('La URL debe empezar con http:// o https://', 'OK', { duration: 2500 });
       return;

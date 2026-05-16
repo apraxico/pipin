@@ -12,6 +12,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/services/service-detail.component').then(m => m.ServiceDetailComponent)
   },
+  {
+    path: 'u/:uid',
+    loadComponent: () =>
+      import('./pages/profile/profile-public.component').then(m => m.ProfilePublicComponent)
+  },
 
   // Auth
   {
